@@ -1,11 +1,7 @@
 import discord
-import os
 from discord.ext import tasks
+from config import TOKEN, GUILD_ID, ROLE_ID, MESSAGE_ID
 
-TOKEN = os.getenv("DISCORD_BOT_TOKEN")
-GUILD_ID = int(os.getenv("GUILD_ID", "1334224905553576030"))
-ROLE_ID = int(os.getenv("ROLE_ID", "1334231259257507892"))
-MESSAGE_ID = int(os.getenv("MESSAGE_ID", "1334235802724466854"))
 EMOJI = "✅"
 
 intents = discord.Intents.default()
@@ -15,7 +11,6 @@ intents.members = True
 
 class VerificationBot(discord.Client):
     async def setup_hook(self):
-        # Start the task in setup_hook instead of __init__
         self.keep_alive.start()
 
     async def on_ready(self):
