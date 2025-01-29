@@ -1,6 +1,5 @@
 import discord
 import os
-import asyncio
 from discord.ext import tasks
 
 TOKEN = os.getenv("DISCORD_BOT_TOKEN")
@@ -15,43 +14,43 @@ intents.guilds = True
 intents.members = True
 
 class VerificationBot(discord.Client):
-    def __init__(self):
-        super().__init__(intents=intents)
+    async def setup_hook(self):
+        # Start the task in setup_hook instead of __init__
         self.keep_alive.start()
 
     async def on_ready(self):
         print(f'Logged in as {self.user}')
 
-    @tasks.loop(minutes=5)  # Run every 5 minutes
+    @tasks.loop(minutes=5)
     async def keep_alive(self):
-        print("Bot is still running...")  # This will help keep the bot active
+        print("Bot is still running...")
 
     async def on_raw_reaction_add(self, payload):
-        print(f"Reaction detected: {payload.emoji}")  # Debug log
+        print(f"Reaction detected: {payload.emoji}")
         if payload.message_id == MESSAGE_ID and str(payload.emoji) == EMOJI:
-            print(f"Correct message and emoji")  # Debug log
+            print(f"Correct message and emoji")
             guild = self.get_guild(GUILD_ID)
             if guild:
-                print(f"Guild found: {guild.name}")  # Debug log
+                print(f"Guild found: {guild.name}")
                 member = guild.get_member(payload.user_id)
                 if member:
-                    print(f"Member found: {member.name}")  # Debug log
+                    print(f"Member found: {member.name}")
                     role = guild.get_role(ROLE_ID)
                     if role:
-                        print(f"Role found: {role.name}")  # Debug log
+                        print(f"Role found: {role.name}")
                         try:
                             await member.add_roles(role)
                             print(f"Added {role.name} to {member.name}")
                         except Exception as e:
-                            print(f"Error adding role: {e}")  # Debug log
+                            print(f"Error adding role: {e}")
                     else:
-                        print("Role not found")  # Debug log
+                        print("Role not found")
                 else:
-                    print("Member not found")  # Debug log
+                    print("Member not found")
             else:
-                print("Guild not found")  # Debug log
+                print("Guild not found")
 
-bot = VerificationBot()
+bot = VerificationBot(intents=intents)
 
 if __name__ == '__main__':
     bot.run(TOKEN)
