@@ -1,0 +1,3 @@
+# Create/update this file
+discord.py
+gunicorn
